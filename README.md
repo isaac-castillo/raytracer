@@ -1,4 +1,3 @@
-Building:
 
 cmake .
 make
