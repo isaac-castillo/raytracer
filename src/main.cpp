@@ -2,9 +2,12 @@
 #include <string>
 
 #include "scene.hpp"
-#include "sceneRW.hpp"
+#include "scene_builder.hpp"
+#include <FreeImage.h>
 
-namespace raytracer {
+using namespace raytracer;
+void saveScreenshot(scene *scene, std::string fname, std::vector<vec3> inputPixels);
+
 int main(int argc, char *argv[])
 {
     if (argc <= 1)
@@ -13,20 +16,42 @@ int main(int argc, char *argv[])
         return 0;
     }
      
-    scene scene;
-    sceneRW fr;
-    fr.read_file(argv[1], &scene);
-    // if (scene.type == "texture")
-    //     scene.bitmap = loadImage(scene.input);
-    
-    
-    tracer rt(5, &scene);
-    
-    std::vector<vec3> pixels = scene.render_scene(rt);
+    scene_builder sb(argv[1]);
 
-    // std::string s = scene.filename;
-    // saveScreenshot(&scene, s, pixels);
+    //Expensive operation (recreates the scene)
+    scene * scene = sb.create_scene();
+    
+    tracer rt(5, scene);
+    
+    std::vector<vec3> pixels = scene->render_scene(rt);
+
+    saveScreenshot(scene, "output.png", pixels);
 
     return 1;
 }
+
+void saveScreenshot(scene * scene, std::string fname, std::vector<vec3> inputPixels)
+{
+    int w = scene->get_width();
+    int h = scene->get_height();
+    int pix = w * h;
+    FreeImage_Initialise();
+
+    FIBITMAP *bitmap = FreeImage_Allocate(w, h, 24);
+    RGBQUAD color;
+
+    for (size_t i = 0; i < pix; ++i)
+    {
+        color.rgbRed = inputPixels[i].x;
+        color.rgbGreen = inputPixels[i].y;
+        color.rgbBlue = inputPixels[i].z;
+        int ii = i / w;
+        int jj = i % w;
+        FreeImage_SetPixelColor(bitmap, jj, h - ii - 1, &color);
+    }
+
+    std::cout << "Saving screenshot: " << fname << "\n";
+
+    FreeImage_Save(FIF_PNG, bitmap, fname.c_str(), 0);
+    FreeImage_DeInitialise();
 }

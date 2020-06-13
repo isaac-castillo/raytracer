@@ -6,14 +6,17 @@
 
 #include "gl_typedef.hpp"
 #include "scene.hpp"
+#include "shape.hpp"
 
 namespace raytracer {
+
+class scene;   
 class tracer
 {
     private:
 
         vec3 _trace_reflected(const vec3 & initial, const vec3 & direction, int counter) const;
-        vec3 _compute_lighting(std::unique_ptr<shape> shape, const vec3 &initial, const vec3 &direction) const;
+        vec3 _compute_lighting(ray_distance &rd, const vec3 &initial, const vec3 &direction) const;
         ray_distance _closest_shape(const vec3 &initial, const vec3 &direction) const;
 
         scene *_scene;

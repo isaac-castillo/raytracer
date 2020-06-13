@@ -51,9 +51,11 @@ mat4 camera::look_at()
 
 void camera::print()
 {
-    std::cout << "look_from: " << glm::to_string(_look_from) << std::endl;
-    std::cout << "look_at: " << glm::to_string(_look_at) << std::endl;
-    std::cout << "up: " << glm::to_string(_up) << std::endl;
+    std::cout << "camera{";
+    std::cout << "look_from=" << glm::to_string(_look_from);
+    std::cout << "look_at=" << glm::to_string(_look_at);
+    std::cout << "up=" << glm::to_string(_up);
+    std::cout << "}" << std::endl;
 }
 
 } //raytracer

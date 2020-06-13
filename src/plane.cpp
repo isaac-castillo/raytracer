@@ -1,10 +1,17 @@
 #include "plane.hpp"
 #include <glm/glm.hpp>
+#include <glm/gtx/normal.hpp>
+
 namespace raytracer {
 
-    plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices){
+    plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices), _normal(vec4(glm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])), 0.0f)) {
 
     }
+
+    void plane::print() {
+
+    }
+    
     ray_distance plane::inside(const vec3 &initial, const vec3 &direction){
 
 
@@ -13,15 +20,17 @@ namespace raytracer {
         
         mat4 reverse = glm::inverse(_transform);
         vec4 reverseInitial = reverse * vec4(initial, 1);
-        vec4 reverseDir = reverse * vec4(direction, 0);
+        vec4 d = vec4(direction, 0);
+        vec4 reverseDir = reverse * d;
 
 
 
         rd.dist = (_dist_to_plane(vec3(reverseInitial), vec3(reverseDir)));
         if (rd.dist > 0.0001)
         {
-            vec3 pp = vec3(reverseInitial + reverseDir * rd.dist);
-            rd.intersect = _intersect(pp);
+            rd.pp = vec3(reverseInitial + reverseDir * rd.dist);
+            rd.intersect = _intersect(rd.pp);
+            rd.shape_ptr = this;
         }
 
         return rd;
@@ -51,5 +60,13 @@ namespace raytracer {
         t = t / glm::dot(vec4(direction, 0.0f), _normal);
 
         return t;
+    }
+
+    mat4 plane::get_transform() const{
+        return _transform;
+    }
+
+    vec3 plane::normal() const {
+        return _normal;
     }
 }

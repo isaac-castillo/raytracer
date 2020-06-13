@@ -19,41 +19,49 @@
 // #include <string>
 
 namespace raytracer {
+
+class tracer;
 class scene
 {
 
 private:
     camera _cam;
+    std::vector<light> _lights;
     std::vector<std::unique_ptr<shape>> _shapes;
-    std::vector<light> lights;
 
     int _width;
     int _height;
     int _num_shapes;
 
+    vec3 _attenuation;
 
 
 public:
+    scene();
     void set_camera(const vec3 & eye, const vec3 & center, const vec3 & up, const float & fovy);
     void set_camera(const camera & cam);
     void set_height(int height);
     void set_width(int width);
+    void add_shape(std::unique_ptr<shape> & _shape);
+    void add_light(const light & light);
+
     void print_shapes() const;
-    std::vector<std::unique_ptr<shape>> get_shapes();
+    int get_width() const;
+    int get_height() const;
+    const std::vector<std::unique_ptr<shape>> & get_shapes();
     std::vector<vec3> render_scene(const tracer & tracer);
     std::vector<light> get_lights();
+
+    vec3 get_attenuation() const; 
     // std::string input;
     // std::string type;
     // FIBITMAP *bitmap;
     // std::vector<vec3> image;
-    vec3 attenuation;
+    // vec3 attenuation;
     // int maxdepth;
     // Scene();
     // void renderScene2();
     // void addShape(Shape *shape);
-    // void setWidth(int width);
-    // void setHeight(int height);
-    // std::vector<vec3> renderScene();
     // int Height();
     // int Width();
     // std::vector<Shape> shapes;

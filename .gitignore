@@ -1,3 +1,15 @@
 build
 include
 .vscode
+lib
+*.png
+*.cmake
+CMakeCache.txt
+cmake.*
+*.make
+CMakeFiles/
+Makefile
+*.json
+
+raytracer
+raytracer_test

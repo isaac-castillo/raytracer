@@ -1,7 +1,7 @@
 {
     "size": {
-        "width": 640,
-        "height": 480
+        "width": 20,
+        "height": 20
     },
     "camera": {
         "from": {
@@ -23,37 +23,22 @@
     },
     "lights": [
         {
-            "light_directional": {
-                "position": {
+            "type" : "directional",
+            "position": {
                     "x": 0,
                     "y": 0,
-                    "z": 0
-                },
-                "color": {
-                    "red": 0,
-                    "green": 0,
-                    "blue": 0
-                }
-            }
-        },
-        {
-            "light_point": {
-                "position": {
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
-                "color": {
-                    "red": 0,
-                    "green": 0,
-                    "blue": 0
-                }
+                    "z": 1
+            },
+            "color": {
+                    "red": 0.5,
+                    "green": 0.5,
+                    "blue": 0.5
             }
         }
     ],
-    "shapes": [
-        {
-            "plane": {
+    "shapes": {
+        "planes": [
+            {
                 "vertices": [
                     {
                         "x": -1,
@@ -61,18 +46,18 @@
                         "z": 0
                     },
                     {
-                        "x": -1,
+                        "x": 1,
                         "y": -1,
                         "z": 0
                     },
                     {
-                        "x": -1,
-                        "y": -1,
+                        "x": 1,
+                        "y": 1,
                         "z": 0
                     },
                     {
                         "x": -1,
-                        "y": -1,
+                        "y": 1,
                         "z": 0
                     }
                 ],
@@ -81,14 +66,22 @@
                         0,
                         1,
                         2
-                    ],
-                    [
-                        0,
-                        2,
-                        3
                     ]
-                ]
-            }
-        }
-    ]
+                ],
+                "ambient": 
+                    {
+                        "x": 0.1,
+                        "y": 0.1,
+                        "z": 0.1
+                    },
+                "diffuse": {
+                    "x": 1,
+                    "y": 0,
+                    "z": 0
+                }
+            }],
+        "spheres": []
+    }
 }
+    
+    

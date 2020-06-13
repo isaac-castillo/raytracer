@@ -1,22 +1,25 @@
+#ifndef SCENE_BUIDLER_HPP
+#define SCENE_BUILDER_HPP
 #include <memory>
 #include "scene.hpp"
+#include <string>
+#include <nlohmann/json.hpp>
+namespace raytracer
+{
 
-namespace raytracer {
-    
-    
-    class scene_builder {
+class scene_builder
+{
 
-        public:
-            scene_builder(const std::string &filename);
-        
+public:
+    scene_builder(const std::string &filename);
+    scene *create_scene();
 
-        private:
-            void create_scene(const std::shared_ptr<scene> scene){
+private:
+    std::unique_ptr<scene> _scene;
 
-
-        }
-
-
-    };
-
-} //raytracer
+    vec3 json2vec(nlohmann::json);
+    vec4 json2vec4(nlohmann::json);
+    vec3 json2color(nlohmann::json c);
+}; // namespace raytracer
+}
+#endif

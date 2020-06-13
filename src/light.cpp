@@ -3,7 +3,7 @@
 
 namespace raytracer {
 
-    light::light(light_type type, const vec3 &color, const vec3 &position){
+    light::light(light_type type, const vec3 &color, const vec3 &position) : _type(type), _color(vec4(color, 1.0)), _position(position){
 
     }
     void light::set_position()
@@ -39,7 +39,7 @@ namespace raytracer {
 
         vec3 halfvec = normalize(direction + eyedirn);
         float nDotH = glm::dot(normal, halfvec);
-        vec4 phong = shape->get_material().diffuse * _color * vec4(pow(std::max(nDotH, 0.0f), shape->get_material().shininess));
+        vec4 phong = shape->get_material().specular * _color * vec4(pow(std::max(nDotH, 0.0f), shape->get_material().shininess));
         vec4 retval = lambert + phong;
 
         return vec3(retval);
