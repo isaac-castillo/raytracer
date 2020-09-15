@@ -15,3 +15,5 @@ raytracer
 raytracer_test
 
 FreeImage/
+
+.devcontainer

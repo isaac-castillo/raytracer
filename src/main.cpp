@@ -3,7 +3,7 @@
 
 #include "scene.hpp"
 #include "scene_builder.hpp"
-#include <FreeImage.h>
+#include "FreeImage.h"
 #include "tracer.hpp"
 
 

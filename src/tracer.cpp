@@ -98,7 +98,7 @@ namespace raytracer
             if (!closest_shadow.intersect)
             {
 
-                finalcolor += denom * l.lighting(initial, dir, rd.shape_ptr).as_vector();
+                finalcolor += denom * vec3(l.lighting(initial, dir, rd.shape_ptr).as_vector());
             }
             else
             {

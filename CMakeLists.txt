@@ -33,4 +33,4 @@ src/tracer.cpp
 src/shape.hpp
 )
 
-target_link_libraries(raytracer LINK_PUBLIC ${freeimage})
+target_link_libraries(raytracer -lfreeimage)
