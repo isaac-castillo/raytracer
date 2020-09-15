@@ -13,3 +13,5 @@ Makefile
 
 raytracer
 raytracer_test
+
+FreeImage/

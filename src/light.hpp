@@ -2,29 +2,37 @@
 #define LIGHT_HPP
 
 #include "gl_typedef.hpp"
-#include "shape.hpp"
+#include "color.hpp"
+#include "position.hpp"
 
-namespace raytracer {
+namespace raytracer
+{
 
-    enum light_type { direction, point};
-
-    class light {
-
-
-        private:
-            light_type _type;
-            vec4 _color;
-            vec3 _position;
-
-        public:
-            light(light_type type, const vec3 & color, const vec3 & position);
-            void set_position();
-            vec3 get_color() const;
-            vec3 get_position() const ;
-            light_type get_light_type() const;
-
-            vec3 lighting(const vec3 &initial, const vec3 &direction, const shape *shape) const;
+    enum class light_type
+    {
+        direction,
+        point
     };
-}
+
+    class direction;
+    class shape;
+    class light
+    {
+
+    private:
+        light_type _type;
+        color _color;
+        position _position;
+
+    public:
+        light(light_type type, const color &color, const position &position);
+        void set_position();
+        color get_color() const;
+        position get_position() const;
+        light_type get_light_type() const;
+
+        color lighting(const position &initial, const direction &direction, const shape *shape) const;
+    };
+} // namespace raytracer
 
 #endif

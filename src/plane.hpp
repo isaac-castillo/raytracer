@@ -7,13 +7,14 @@
 
 namespace raytracer {
     
+    
     class plane : public shape {
 
 
     public:
         plane(const std::vector<vec4> &vertices);
 
-        ray_distance inside(const vec3 &initial, const vec3 &direction) override;
+        ray_distance inside(const position &initial, const direction &direction) override;
         void print() override;
         mat4 get_transform() const override;
         vec3 normal() const override;

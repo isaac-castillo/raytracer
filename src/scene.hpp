@@ -7,17 +7,9 @@
 
 
 #include "camera.hpp"
-#include "tracer.hpp"
 #include "gl_typedef.hpp"
-#include "shape.hpp"
 #include "light.hpp"
-
-// #include "Transformer.h"
-// #include "Shape.h"
-// #include "Light.h"
-// #include "FreeImage.h"
-// #include <string>
-
+#include "shape.hpp"
 namespace raytracer {
 
 class tracer;
@@ -29,9 +21,9 @@ private:
     std::vector<light> _lights;
     std::vector<std::unique_ptr<shape>> _shapes;
 
-    int _width;
-    int _height;
-    int _num_shapes;
+    int _width = {0};
+    int _height = {0};
+    int _num_shapes = {0};
 
     vec3 _attenuation;
 
@@ -53,24 +45,7 @@ public:
     std::vector<light> get_lights();
 
     vec3 get_attenuation() const; 
-    // std::string input;
-    // std::string type;
-    // FIBITMAP *bitmap;
-    // std::vector<vec3> image;
-    // vec3 attenuation;
-    // int maxdepth;
-    // Scene();
-    // void renderScene2();
-    // void addShape(Shape *shape);
-    // int Height();
-    // int Width();
-    // std::vector<Shape> shapes;
-    // vec3 lighting(Shape *shape, vec3 intersect, vec3 posn);
-    // std::vector<Light> lights;
-    // vec3 ComputeLight(vec3 direction, vec4 lightcolor, vec3 normal, vec3 halfvec, vec4 mydiffuse, vec4 myspecular, float myshininess);
-    // void printShapes();
-    // void addLight(Light light);
-    // std::string filename;
+
 };
 }
 #endif

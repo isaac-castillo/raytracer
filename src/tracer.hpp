@@ -1,39 +1,28 @@
 #ifndef RAYTRACER_H
 #define RAYTRACER_H
 
-// #include "Transformer.h"
-// #include "Shape.h"
-
 #include "gl_typedef.hpp"
 #include "scene.hpp"
-#include "shape.hpp"
 
-namespace raytracer {
-
-class scene;   
-class tracer
+namespace raytracer
 {
-    private:
 
-        vec3 _trace_reflected(const vec3 & initial, const vec3 & direction, int counter) const;
-        vec3 _compute_lighting(ray_distance &rd, const vec3 &initial, const vec3 &direction) const;
-        ray_distance _closest_shape(const vec3 &initial, const vec3 &direction) const;
+    class ray_distance;
+    class color;
+    class tracer
+    {
+    private:
+        color _trace_reflected(const position &initial, const direction &direction, int counter) const;
+        color _compute_lighting(ray_distance &rd, const position &initial, const direction &direction) const;
+        ray_distance _closest_shape(const position &initial, const direction &direction) const;
 
         scene *_scene;
         int _max_depth;
 
-            // float inPlane(Shape *s, vec3 initial, vec3 direction);
-            // bool intersect(vec3 p, Shape *minShape);
-            // float inSphere(Shape *s, vec3 initial, vec3 direction);
-            // vec3 lighting(Shape *shape, vec3 intersect);
-            // bool shadowIntersect(vec3 sInitial, vec3 sDirection, Scene *scene);
+    public:
+        tracer(int max_depth, scene * scene);
+        color trace(const position &initial, const direction &direction) const;
+    };
 
-        public:
-            tracer(int max_depth, scene *scene);
-            vec3 trace(const vec3 &initial, const vec3 &direction) const;
-
-            // void BarycentricSolver(vec3 p, vec3 a, vec3 b, vec3 c, float &alpha, float &beta, float &gamma);
-        };
-
-} //raytracer
+} // namespace raytracer
 #endif

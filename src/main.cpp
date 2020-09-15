@@ -4,6 +4,8 @@
 #include "scene.hpp"
 #include "scene_builder.hpp"
 #include <FreeImage.h>
+#include "tracer.hpp"
+
 
 using namespace raytracer;
 void saveScreenshot(scene *scene, std::string fname, std::vector<vec3> inputPixels);
@@ -37,7 +39,7 @@ void saveScreenshot(scene * scene, std::string fname, std::vector<vec3> inputPix
     int pix = w * h;
     FreeImage_Initialise();
 
-    FIBITMAP *bitmap = FreeImage_Allocate(w, h, 24);
+    FIBITMAP * bitmap = FreeImage_Allocate(w, h, 24);
     RGBQUAD color;
 
     for (size_t i = 0; i < pix; ++i)

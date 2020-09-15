@@ -12,26 +12,26 @@ namespace raytracer {
 
     }
     
-    ray_distance plane::inside(const vec3 &initial, const vec3 &direction){
+    ray_distance plane::inside(const position &initial, const direction &direction){
 
 
         ray_distance rd;
 
         
-        mat4 reverse = glm::inverse(_transform);
-        vec4 reverseInitial = reverse * vec4(initial, 1);
-        vec4 d = vec4(direction, 0);
-        vec4 reverseDir = reverse * d;
+        // mat4 reverse = glm::inverse(_transform);
+        // vec4 reverseInitial = reverse * vec4(initial, 1);
+        // vec4 d = vec4(direction, 0);
+        // vec4 reverseDir = reverse * d;
 
 
 
-        rd.dist = (_dist_to_plane(vec3(reverseInitial), vec3(reverseDir)));
-        if (rd.dist > 0.0001)
-        {
-            rd.pp = vec3(reverseInitial + reverseDir * rd.dist);
-            rd.intersect = _intersect(rd.pp);
-            rd.shape_ptr = this;
-        }
+        // rd.dist = (_dist_to_plane(vec3(reverseInitial), vec3(reverseDir)));
+        // if (rd.dist > 0.0001)
+        // {
+        //     rd.pp = vec3(reverseInitial + reverseDir * rd.dist);
+        //     rd.intersect = _intersect(rd.pp);
+        //     rd.shape_ptr = this;
+        // }
 
         return rd;
     }

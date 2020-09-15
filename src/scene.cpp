@@ -4,7 +4,9 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include "tracer.hpp"
 #include "shape.hpp"
+
 namespace raytracer {
     
 
@@ -43,29 +45,29 @@ namespace raytracer {
     {
 
         std::vector<vec3> pixels(_width * _height);
-        //return pixels;
-        std::cout << "Rendering a scene of size " << _width <<  " x " << _height << "" << std::endl;
-        vec4 eye = vec4(_cam.look_from(), 1.0f);
+        // //return pixels;
+        // std::cout << "Rendering a scene of size " << _width <<  " x " << _height << "" << std::endl;
+        // vec4 eye = vec4(_cam.look_from(), 1.0f);
 
-        int i, j;
-        for (i = 0; i < _height; i++)
-        {
+        // int i, j;
+        // for (i = 0; i < _height; i++)
+        // {
 
-            for (j = 0; j < _width; j++)
-            {
-                vec4 dirn = vec4(_cam.direction(j, i, _width, _height), 0.0f);
-                int counter = 0;
+        //     for (j = 0; j < _width; j++)
+        //     {
+        //         vec4 dirn = vec4(_cam.direction(j, i, _width, _height), 0.0f);
+        //         int counter = 0;
 
-                vec3 res = vec3(255) * tracer.trace(vec3(eye), vec3(dirn));
-                pixels[i * _width + j] = res;
+        //         vec3 res = vec3(255) * tracer.trace(vec3(eye), vec3(dirn));
+        //         pixels[i * _width + j] = res;
                 
-            }
+        //     }
             
-            if (i + j % 100 == 0)
-            {
-                std::cout << "\b" << float((i + j)) / (_width * _height) * 100 << " \% done " << std::endl;
-            }
-        }
+        //     if (i + j % 100 == 0)
+        //     {
+        //         std::cout << "\b" << float((i + j)) / (_width * _height) * 100 << " \% done " << std::endl;
+        //     }
+        // }
 
         return pixels;
     }

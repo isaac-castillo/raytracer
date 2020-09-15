@@ -1,20 +1,23 @@
 #include "light.hpp"
 #include <cmath>
+#include "position.hpp"
+#include "shape.hpp"
+#include "direction.hpp"
 
-namespace raytracer {
+namespace raytracer
+{
 
-    light::light(light_type type, const vec3 &color, const vec3 &position) : _type(type), _color(vec4(color, 1.0)), _position(position){
-
+    light::light(light_type type, const color &color, const position &position) : _type(type), _color(color), _position(position)
+    {
     }
     void light::set_position()
     {
-
     }
-    vec3 light::get_color() const
+    color light::get_color() const
     {
         return _color;
     }
-    vec3 light::get_position() const
+    position light::get_position() const
     {
         return _position;
     }
@@ -23,25 +26,23 @@ namespace raytracer {
         return _type;
     }
 
-    vec3 light::lighting(const vec3 &initial, const vec3 &direction, const shape *shape) const {
+    color light::lighting(const position &initial, const direction &direction, const shape *shape) const
+    {
 
-        // if( lightcolor.x >= 0.8 )
-        //  normal2 =  vec3(normal.x + rand() % 2, normal.y + rand() % 2 , normal.z + rand() % 2);
-        //vec3 normal2 = vec3( ((double) rand() / (RAND_MAX) + 0.5)  * normal.x, ((double) rand() / (RAND_MAX) + 0.5)  * normal.y, ((double) rand() / (RAND_MAX) + 0.5)  * normal.z);
+        vec4 transInt = shape->get_transform() * vec4(direction.get_direction(), 1.0f);
 
-        vec4 transInt = shape->get_transform() * vec4(direction, 1.0f);
         vec3 homogPosTransf = vec3(transInt.x / transInt.w, transInt.y / transInt.w, transInt.z / transInt.w);
-        vec3 eyedirn = glm::normalize(initial - homogPosTransf);
+        vec3 eyedirn = glm::normalize(initial.get_position() - homogPosTransf);
         vec3 normal = shape->normal();
 
-        float nDotL = glm::dot(normal, direction);
-        vec4 lambert = shape->get_material().diffuse * _color * std::max(nDotL, 0.0f);
+        float nDotL = glm::dot(normal, direction.get_direction());
+        vec4 lambert = shape->get_material().diffuse * _color.as_vector() * std::max(nDotL, 0.0f);
 
-        vec3 halfvec = normalize(direction + eyedirn);
+        vec3 halfvec = normalize(direction.get_direction() + eyedirn);
         float nDotH = glm::dot(normal, halfvec);
-        vec4 phong = shape->get_material().specular * _color * vec4(pow(std::max(nDotH, 0.0f), shape->get_material().shininess));
+        vec4 phong = shape->get_material().specular * _color.as_vector() * vec4(pow(std::max(nDotH, 0.0f), shape->get_material().shininess));
         vec4 retval = lambert + phong;
 
-        return vec3(retval);
+        return color(retval.x, retval.y, retval.z);
     }
-}
+} // namespace raytracer
