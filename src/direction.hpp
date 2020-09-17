@@ -20,5 +20,15 @@ namespace raytracer
         }
     };
 
+
+    inline direction operator*(mat4 & transform, const direction & dir){
+        // upcasts the vec3 to a vec4 with 0 in the fourth field.
+        return direction(transform * dir.get_direction());
+    }
+
+    template <typename T>
+    inline position operator*(const direction &dir, T type){
+        return position(dir * type);
+    }
 } // namespace raytracer
 #endif

@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "tracer.hpp"
-#include "ray_distance.hpp"
+#include "intersect_result.hpp"
 #include "shape.hpp"
 #include "color.hpp"
 #include "direction.hpp"
@@ -10,8 +10,7 @@ namespace raytracer
 
 {
 
-
-    tracer::tracer(int max_depth, scene *scene) : _max_depth(max_depth), _scene(scene)
+    tracer::tracer(int max_depth, std::shared_ptr<scene> scene) : _max_depth(max_depth), _scene(scene)
     {
     }
 
@@ -39,32 +38,36 @@ namespace raytracer
         return _compute_lighting(min_dist, initial, direction);
     }
 
-    ray_distance tracer::_closest_shape(const position &initial, const direction &direction) const
+    intersect_result tracer::_closest_shape(const position &initial, const direction &direction) const
     {
-        ray_distance min_rd;
-        for (auto const &s : _scene->get_shapes())
+        intersect_result min_intersection;
+        for (auto const &shape : _scene->get_shapes())
         {
 
-            ray_distance rd = s->inside(initial, direction);
-            if (rd.intersect && rd.dist < min_rd.dist)
+            intersect_result curr_result = shape->inside(initial, direction);
+            if (curr_result.intersect && curr_result.distance < min_intersection.distance)
             {
-                min_rd = rd;
+                min_intersection = curr_result;
             }
         }
-        return min_rd;
+        return min_intersection;
     }
 
-    color tracer::_compute_lighting(ray_distance &rd, const position &initial, const direction &direct) const
+    color tracer::_compute_lighting(intersect_result &intersection_result, const position &initial, const direction &direct) const
     {
 
         vec3 finalcolor(0.0, 0.0, 0.0);
-        vec4 transInt = rd.shape_ptr->get_transform() * vec4(rd.pp, 1.0f);
+
+        const auto [shape, distance, _, point] = intersection_result; 
+        //The transformed in,tersection
+        // vec4 transInt = shape->get_transform() * vec4(intersection_result.point, 1.0f);
+
         vec3 homogPosTransf = vec3(transInt.x / transInt.w, transInt.y / transInt.w, transInt.z / transInt.w);
-        vec3 eyedirn = glm::normalize(initial.get_position() - homogPosTransf);
+        vec3 eyedirn = glm::normalize(initial.get_position() - point);
 
-        vec3 normal = rd.shape_ptr->normal();
+        vec3 normal = intersection_result.shape_ptr->normal();
 
-        normal = normalize(mat3(glm::transpose(glm::inverse(rd.shape_ptr->get_transform()))) * rd.shape_ptr->normal());
+        normal = normalize(mat3(glm::transpose(glm::inverse(intersection_result.shape_ptr->get_transform()))) * intersection_result.shape_ptr->normal());
 
         normal = normalize(normal);
 
@@ -98,7 +101,7 @@ namespace raytracer
             if (!closest_shadow.intersect)
             {
 
-                finalcolor += denom * vec3(l.lighting(initial, dir, rd.shape_ptr).as_vector());
+                finalcolor += denom * vec3(l.lighting(initial, dir, intersection_result.shape_ptr.get()).as_vector());
             }
             else
             {
@@ -106,7 +109,7 @@ namespace raytracer
             }
         }
 
-        vec3 res = vec3(rd.shape_ptr->get_material().emission + rd.shape_ptr->get_material().ambient) + finalcolor;
+        vec3 res = vec3(intersection_result.shape_ptr->get_material().emission + rd.shape_ptr->get_material().ambient) + finalcolor;
         return color(res);
     }
 } // namespace raytracer

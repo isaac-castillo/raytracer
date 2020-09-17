@@ -4,7 +4,7 @@
 #include "material.hpp"
 #include "gl_typedef.hpp"
 #include <memory>
-#include "ray_distance.hpp"
+#include "intersect_result.hpp"
 
 namespace raytracer {
 
@@ -32,7 +32,7 @@ namespace raytracer {
 
         public:
             virtual void print() = 0;
-            virtual ray_distance inside(const position &initial, const direction &direction) = 0;
+            virtual intersect_result inside(const position &initial, const direction &direction) = 0;
             virtual mat4 get_transform() const = 0;
             virtual vec3 normal() const = 0;
             material get_material() const{

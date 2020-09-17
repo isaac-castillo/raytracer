@@ -61,7 +61,7 @@ void test_camera()
 void test_plane()
 {
 
-    // ray_distance rd;
+    // intersect_result rd;
     // const vec3 eye = cam.look_from();
     // const vec3 direction = cam.direction(18, 18, 20, 20);
     // for (auto const &p : s->get_shapes()){
