@@ -3,7 +3,6 @@
 
 #include <limits>
 #include "gl_typedef.hpp"
-#include "position.hpp"
 namespace raytracer
 {
     class shape;
@@ -18,11 +17,11 @@ namespace raytracer
         //The distance to the object intersected
         float distance = std::numeric_limits<float>().max();
 
-        //The Result
+        //The result pattern 
         float intersect = false;
 
-        //
-        position point = position(vec4(0));
+        //The point of intersection
+        vec4 point = vec4(0,0,0,0);
     };
 
 } // namespace raytracer

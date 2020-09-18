@@ -6,44 +6,49 @@
 #include <memory>
 #include "intersect_result.hpp"
 
-namespace raytracer {
+namespace raytracer
+{
 
-    enum class shapes {
-        plane, sphere
+    enum class shapes
+    {
+        plane,
+        sphere
     };
 
-    class position;
-    class direction;
-    
-    class shape {
+    class ray;
+    class shape
+    {
 
-        private:
-            material _material;
+    private:
+        material _material;
 
-        protected:
+    protected:
+        shape(vec4 normal, mat4 transform) : _transform(transform), _normal(normal){
 
-            shape() : _transform(mat4(1.0f)){
+                                                                    };
 
-            };
+        shape()
+        {
+        }
 
-            vec3 _normal;
-            mat4 _transform; 
+        vec4 _normal;
+        mat4 _transform;
 
+    public:
+        virtual void print() = 0;
+        virtual intersect_result inside(const ray &ray) = 0;
+        virtual mat4 get_transform() const = 0;
+        virtual vec4 normal() const = 0;
+        material get_material() const
+        {
+            return _material;
+        }
 
-        public:
-            virtual void print() = 0;
-            virtual intersect_result inside(const position &initial, const direction &direction) = 0;
-            virtual mat4 get_transform() const = 0;
-            virtual vec3 normal() const = 0;
-            material get_material() const{
-                return _material;
-            }
-
-            void set_material(const material & material){
-                _material = material;
-            }
-
+        void set_material(const material &material)
+        {
+            _material = material;
+        }
     };
 
-}
+} // namespace raytracer
 #endif

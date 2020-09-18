@@ -7,26 +7,26 @@
 
 namespace raytracer {
     
+    class ray;
+    class plane : protected shape {
+
     
-    class plane : public shape {
-
-
     public:
         plane(const std::vector<vec4> &vertices);
 
 
         // A check to determine whether the vector reaches the plane
-        intersect_result inside(const position &initial, const direction &direction) override;
+        intersect_result inside(const ray & ray) override;
         void print() override;
 
         mat4 get_transform() const override;
-        vec3 normal() const override;
+        vec4 normal() const override;
 
     private:
-        float _dist_to_plane(const position &initial, const direction &direction);
-        bool _intersect(const position &position_to_plane);
+        float _dist_to_plane(const ray & ray);
+        bool _intersect(const vec4 &position_to_plane);
+
         std::vector<vec4> _vertices;
-        vec4 _normal;
 
     };
 

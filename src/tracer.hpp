@@ -11,21 +11,21 @@ namespace raytracer
 {
 
     class intersect_result;
-    class color;
+    class ray;
     class tracer
     {
 
     private:
-        color _trace_reflected(const position &initial, const direction &direction, int counter) const;
-        color _compute_lighting(intersect_result &rd, const position &initial, const direction &direction) const;
-        intersect_result _closest_shape(const position &initial, const direction &direction) const;
+        vec3 _trace_reflected(const ray &ray, int counter) const;
+        vec3 _compute_color(intersect_result &rd, const ray &ray) const;
+        intersect_result _closest_shape(const ray &ray) const;
 
         std::shared_ptr<scene> _scene;
         int _max_depth;
 
     public:
         tracer(int max_depth, std::shared_ptr<scene> scene);
-        color trace(const position &initial, const direction &direction) const;
+        vec3 trace(const ray &ray) const;
     };
 
 } // namespace raytracer

@@ -2,8 +2,6 @@
 #define LIGHT_HPP
 
 #include "gl_typedef.hpp"
-#include "color.hpp"
-#include "position.hpp"
 
 namespace raytracer
 {
@@ -14,24 +12,15 @@ namespace raytracer
         point
     };
 
-    class direction;
-    class shape;
     class light
     {
 
-    private:
-        light_type _type;
-        color _color;
-        position _position;
-
     public:
-        light(light_type type, const color &color, const position &position);
-        void set_position();
-        color get_color() const;
-        position get_position() const;
-        light_type get_light_type() const;
+        light(light_type type, const vec4 &color, const vec4 &position);
+        light_type _type;
+        vec4 _color;
+        vec4 _position;
 
-        color lighting(const position &initial, const direction &direction, const shape *shape) const;
     };
 } // namespace raytracer
 

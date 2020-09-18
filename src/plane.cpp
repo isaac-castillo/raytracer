@@ -1,14 +1,16 @@
 #include "plane.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
-#include "position.hpp"
-#include "direction.hpp"
 #include "intersect_result.hpp"
+#include "util.hpp"
 #include <memory>
+#include "gl_typedef.hpp"
 namespace raytracer {
 
-    plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices), _normal(vec4(glm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])), 0.0f)) {
-
+    plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices), 
+    
+        shape() //tglm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])))) {
+            {
     }
 
     void plane::print() {
@@ -16,7 +18,7 @@ namespace raytracer {
     }
     
     /* A algorithm to compute whether a position interects with a plane */
-    intersect_result plane::inside(const position &initial, const direction & dir){
+    intersect_result plane::inside(const ray & _ray){
 
 
         intersect_result result;
@@ -45,21 +47,18 @@ namespace raytracer {
          */
 
         /* 1 */
-        mat4 inverse = glm::inverse(_transform);
-        position inverseInitial = inverse * initial;
-        direction inverseDirection = inverse * dir;
-
+        auto inverse_ray = util::inverse_ray(_transform, _ray);
 
         /* 2 */
-        result.distance = _dist_to_plane(inverseInitial, inverseDirection);
+        result.distance = _dist_to_plane(inverse_ray);
         
 
         /* 3: If t is a tiny bit positive */
         if (result.distance > 0.0001)
         {
-
+            const auto [position, direction] = inverse_ray;
             /* This point is the point after inversing the inverse (by applying the transform positively) */
-            result.point = _transform * ( inverseInitial + inverseDirection * result.distance );
+            result.point = _transform * ( position + direction * result.distance );
 
             /* 4 */
             result.intersect = _intersect(result.point);
@@ -71,11 +70,11 @@ namespace raytracer {
 
 
     /* Use Barycentric coordinates to determine if the intersected position is in the triangle */
-    bool plane::_intersect(const position & position_to_plane){
+    bool plane::_intersect(const vec4 & position_to_plane){
 
         vec3 v0 = vec3(_vertices[1] - _vertices[0]);
         vec3 v1 = vec3(_vertices[2] - _vertices[0]);
-        vec3 v2 = vec3(position_to_plane.get_position()) - vec3(_vertices[0]);
+        vec3 v2 = vec3(position_to_plane) - vec3(_vertices[0]);
         float d00 = glm::dot(v0, v0);
         float d01 = glm::dot(v0, v1);
         float d11 = glm::dot(v1, v1);
@@ -89,10 +88,10 @@ namespace raytracer {
         return beta >= 0 && gamma >=0 && alpha >= 0; 
     }
 
-    float plane::_dist_to_plane(const position &initial, const direction &direction){
+    float plane::_dist_to_plane(const ray & _ray){
 
-        float t = glm::dot(_vertices[0], _normal) - glm::dot(initial.get_position(), _normal);
-        t = t / glm::dot(vec4(direction.get_direction(), 0), _normal);
+        float t = glm::dot(_vertices[0], _normal) - glm::dot(_ray.position, _normal);
+        t = t / glm::dot(_ray.direction, _normal);
 
         return t;
     }
@@ -101,7 +100,7 @@ namespace raytracer {
         return _transform;
     }
 
-    vec3 plane::normal() const {
+    vec4 plane::normal() const {
         return _normal;
     }
 }
