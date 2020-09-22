@@ -16,13 +16,13 @@ namespace raytracer
     {
     }
 
-    vec3 tracer::trace(const ray & ray) const
+    vec3 tracer::trace(const ray & _ray) const
     {
 
-        return _trace_reflected(ray, 0);
+        return _trace_reflected(_ray, 0);
     }
 
-    vec3 tracer::_trace_reflected(const ray & ray, int counter) const
+    vec3 tracer::_trace_reflected(const ray & _ray, int counter) const
     {
 
         if (counter >= _max_depth)
@@ -30,14 +30,19 @@ namespace raytracer
             return vec4(0, 0, 0, 0);
         }
 
-        auto min_dist = _closest_shape(ray);
+        auto min_dist = _closest_shape(_ray);
 
         if (!min_dist.intersect)
         {
             return vec4(0, 0, 0, 0);
         }
 
-        return _compute_color(min_dist, ray);
+        vec3 color = _compute_color(min_dist, _ray);
+
+        //reflected light
+        ray reflected_ray = util::reflected_ray(_ray, min_dist.shape_ptr->normal());
+        return color + vec3(min_dist.shape_ptr->get_material().specular) * _trace_reflected(reflected_ray, ++counter);
+        
     }
 
     intersect_result tracer::_closest_shape(const ray & ray) const
@@ -64,10 +69,6 @@ namespace raytracer
 
         vec4 dehomgenized_pos = util::dehomogenize(point);  
         vec3 eyedirn = glm::normalize(_ray.position - dehomgenized_pos);
-
-        // vec3 normal = shape->normal();
-        // normal = normalize(mat3(glm::transpose(glm::inverse(shape->get_transform()))) * shape->normal());
-        // normal = normalize(normal);
 
         for (auto const &light : _scene->get_lights())
         {
@@ -105,7 +106,7 @@ namespace raytracer
             if (!closest_shadow.intersect)
             {
 
-                // finalcolor += denom * vec3(algorithm::lighting(initial, dir, intersection_result.shape_ptr.get()).as_vector());
+                finalcolor += denom * vec3(algorithm::lighting(vec4(dir, 0), shape.get(), light, vec4(halfv, 0)));
             }
             else
             {
@@ -113,7 +114,7 @@ namespace raytracer
             }
         }
 
-        vec3 res = vec3(intersection_result.shape_ptr->get_material().emission + shape->get_material().ambient) + finalcolor;
+        vec3 res = vec3(shape->get_material().emission + shape->get_material().ambient) + finalcolor;
         return res;
     }
 } // namespace raytracer

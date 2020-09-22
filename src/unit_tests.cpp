@@ -45,7 +45,7 @@ void setup()
 
 
     
-    s = sb.create_scene();
+    // s = sb.create_scene();
 }
 
 void test_camera()

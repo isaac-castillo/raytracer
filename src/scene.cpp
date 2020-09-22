@@ -10,7 +10,7 @@
 namespace raytracer {
     
 
-    scene::scene() : _attenuation(vec3(1,0,0)) {
+    scene::scene() : _attenuation(vec3(1,0,0)),  _cam()  {
 
     }
     void scene::set_camera(const vec3 &look_from, const vec3 &look_at, const vec3 &up, const float &fovy){
@@ -45,8 +45,9 @@ namespace raytracer {
     {
 
         std::vector<vec3> pixels(_width * _height);
-        //return pixels;
         std::cout << "Rendering a scene of size " << _width <<  " x " << _height << "" << std::endl;
+
+        
         vec4 eye = vec4(_cam.look_from(), 1.0f);
 
         int i, j;
@@ -60,12 +61,15 @@ namespace raytracer {
                 ray _ray;
 
                 _ray.position = eye;
-                _ray.direction = vec4(_cam.direction(j, i, _width, _height), 0.0f);;
+                _ray.direction = vec4(_cam.direction(j, i, _width, _height), 0.0f);
+
+                // Multiply the result by 255 to handle RGB values of 255. 
                 vec3 res = vec3(255) * tracer.trace(_ray);
                 pixels[i * _width + j] = res;
                 
             }
             
+            // Someway of printing out the status of the image. 
             if (i + j % 100 == 0)
             {
                 std::cout << "\b" << float((i + j)) / (_width * _height) * 100 << " \% done " << std::endl;

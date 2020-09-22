@@ -10,12 +10,12 @@ namespace raytracer::algorithm {
 
 
     /* The Blinn-Phong lighting algorithm: */
-    inline vec4 lighting(const vec4 & dir, const shape const * shape, const light const * light, const vec4 & halfvec)
+    inline vec4 lighting(const vec4 & dir, const shape * shape, const light & light, const vec4 & halfvec)
     {
 
         //Build up some variables for us to use. 
-        const auto [_, light_color, light_position] = *light;
-        const auto [_, _, specular, shininess, diffuse] = shape->get_material();
+        const auto [light_type, light_color, light_position] = light;
+        const auto [emission, ambient, specular, shininess, diffuse] = shape->get_material();
         auto normal = shape->normal();
 
         // The Blinn-Phong Lighting Algorithm 

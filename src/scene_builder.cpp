@@ -15,9 +15,9 @@ namespace raytracer
     scene_builder::scene_builder(const std::string &filename)
     {
 
-        std::ifstream i(filename);
+        std::ifstream input_file(filename);
         json j;
-        i >> j;
+        input_file >> j;
 
         _scene = std::make_unique<scene>();
 
@@ -77,6 +77,7 @@ namespace raytracer
                 triangle.push_back(verts[j_triangle[0]]);
                 triangle.push_back(verts[j_triangle[1]]);
                 triangle.push_back(verts[j_triangle[2]]);
+                
                 std::unique_ptr<shape> p = std::make_unique<plane>(triangle);
 
                 p->set_material(m);
@@ -85,11 +86,10 @@ namespace raytracer
         }
     }
 
-    scene *scene_builder::create_scene()
+    std::unique_ptr<scene> scene_builder::create_scene()
     {
 
-        scene *s = _scene.get();
-        return s;
+        return std::move(_scene);
     }
 
     vec4 scene_builder::json2vec4(json json)

@@ -13,7 +13,7 @@ namespace raytracer
 
     public:
         scene_builder(const std::string &filename);
-        scene * create_scene();
+        std::unique_ptr<scene> create_scene();
 
     private:
         std::unique_ptr<scene> _scene;

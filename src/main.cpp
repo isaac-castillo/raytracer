@@ -8,7 +8,7 @@
 #include <memory>
 
 using namespace raytracer;
-void saveScreenshot(scene *scene, std::string fname, std::vector<vec3> inputPixels);
+void saveScreenshot(std::shared_ptr<scene> & scene, std::string fname, std::vector<vec3> inputPixels);
 
 int main(int argc, char *argv[])
 {
@@ -17,13 +17,17 @@ int main(int argc, char *argv[])
         std::cerr << "Missing file! Retry with a scene file." << std::endl;
         return 0;
     }
+
+    if(argc >= 3){
+        std::cerr << "Too many arguments. Please enter a single scene file. " << std::endl;
+    }
      
     scene_builder sb(argv[1]);
 
     //Expensive operation (recreates the scene)
-    scene * _scene = sb.create_scene();
+    std::shared_ptr<scene> _scene = sb.create_scene();
     
-    tracer rt(5, std::make_shared<scene>(_scene));
+    tracer rt(5, _scene);
     
     std::vector<vec3> pixels = _scene->render_scene(rt);
 
@@ -32,7 +36,7 @@ int main(int argc, char *argv[])
     return 1;
 }
 
-void saveScreenshot(scene * scene, std::string fname, std::vector<vec3> inputPixels)
+void saveScreenshot(std::shared_ptr<scene> & scene, std::string fname, std::vector<vec3> inputPixels)
 {
     int w = scene->get_width();
     int h = scene->get_height();

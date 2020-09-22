@@ -12,19 +12,16 @@ include_directories(src)
 add_executable(raytracer 
 
 src/camera.cpp
-src/light.cpp
 src/main.cpp
 src/plane.cpp
 src/scene_builder.cpp
 src/scene.cpp
 src/tracer.cpp
 src/shape.hpp
-src/color.hpp
 )
 
 add_executable(raytracer_test
 src/camera.cpp
-src/light.cpp
 src/unit_tests.cpp
 src/plane.cpp
 src/scene_builder.cpp

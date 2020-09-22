@@ -8,7 +8,7 @@
 namespace raytracer {
     
     class ray;
-    class plane : protected shape {
+    class plane : public shape {
 
     
     public:

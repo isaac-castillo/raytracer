@@ -9,9 +9,8 @@ namespace raytracer {
 
     plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices), 
     
-        shape() //tglm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])))) {
-            {
-    }
+        shape() {} //tglm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])))) {
+        
 
     void plane::print() {
 
@@ -62,7 +61,7 @@ namespace raytracer {
 
             /* 4 */
             result.intersect = _intersect(result.point);
-            result.shape_ptr = std::make_shared<shape>(this);
+            result.shape_ptr = std::make_shared<plane>(*this);
         }
 
         return result;
