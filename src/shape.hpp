@@ -31,14 +31,23 @@ namespace raytracer
         {
         }
 
+        shape(vec4 normal) : _normal(normal) {}
+
         vec4 _normal;
-        mat4 _transform;
+        mat4 _transform = mat4(1.0);
 
     public:
         virtual void print() = 0;
         virtual intersect_result inside(const ray &ray) = 0;
-        virtual mat4 get_transform() const = 0;
-        virtual vec4 normal() const = 0;
+        mat4 get_transform() const
+        {
+            return _transform;
+        }
+
+        void set_transform(const mat4 transform) {
+            _transform = transform;
+        }
+        virtual vec4 normal(const vec4 &) const = 0;
         material get_material() const
         {
             return _material;

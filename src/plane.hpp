@@ -18,9 +18,7 @@ namespace raytracer {
         // A check to determine whether the vector reaches the plane
         intersect_result inside(const ray & ray) override;
         void print() override;
-
-        mat4 get_transform() const override;
-        vec4 normal() const override;
+        vec4 normal(const vec4 & v=vec4(1.0f)) const override;
 
     private:
         float _dist_to_plane(const ray & ray);

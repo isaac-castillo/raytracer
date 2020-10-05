@@ -18,7 +18,7 @@ namespace raytracer
         float distance = std::numeric_limits<float>().max();
 
         //The result pattern 
-        float intersect = false;
+        bool intersect = false;
 
         //The point of intersection
         vec4 point = vec4(0,0,0,0);

@@ -5,14 +5,41 @@
 #include "util.hpp"
 #include <memory>
 #include "gl_typedef.hpp"
+#include <iostream>
+#include <glm/gtx/string_cast.hpp>
+#include <iomanip>
 namespace raytracer {
 
     plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices), 
-    
-        shape() {} //tglm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])))) {
+        shape(
+            vec4(glm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])), 1)
+            ) {
+            }
         
 
     void plane::print() {
+
+        std::cout << "vertices:" << std::endl;
+        for(auto const & vec : _vertices){
+            util::print_vector(vec);
+        }
+        std::cout << "normal:";
+        util::print_vector(_normal);
+        std::cout << "transform";
+        util::print_matrix(_transform);
+        std::cout << "material" << std::endl;
+        std::cout << "ambient";
+        util::print_vector(get_material().ambient);
+        std::cout << "emission";
+        util::print_vector(get_material().emission);
+        std::cout << "diffuse";
+        util::print_vector(get_material().diffuse);
+        std::cout << "shininess: " << get_material().shininess << std::endl;
+        std::cout << "specular";
+        util::print_vector(get_material().specular);
+
+        // std::cout << "normal: " << std::setprecision(3) << glm::to_string(_normal) << std::endl;
+        // std::cout << "transform: " << std::setprecision(3) << glm::to_string(_transform) << std::endl;
 
     }
     
@@ -58,7 +85,8 @@ namespace raytracer {
             const auto [position, direction] = inverse_ray;
             /* This point is the point after inversing the inverse (by applying the transform positively) */
             result.point = _transform * ( position + direction * result.distance );
-
+            result.point = util::dehomogenize(result.point);
+            
             /* 4 */
             result.intersect = _intersect(result.point);
             result.shape_ptr = std::make_shared<plane>(*this);
@@ -95,11 +123,7 @@ namespace raytracer {
         return t;
     }
 
-    mat4 plane::get_transform() const{
-        return _transform;
-    }
-
-    vec4 plane::normal() const {
+    vec4 plane::normal(const vec4 & v) const {
         return _normal;
     }
 }

@@ -8,6 +8,10 @@ namespace raytracer
     {
         vec4 position;
         vec4 direction;
+
+        inline vec4 at(float t){
+            return position + t * direction;
+    }
     };
 } // namespace raytracer
 #endif

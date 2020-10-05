@@ -2,7 +2,9 @@
 #define LIGHT_HPP
 
 #include "gl_typedef.hpp"
-
+#include "glm/gtx/string_cast.hpp"
+#include <iostream>
+#include "util.hpp"
 namespace raytracer
 {
 
@@ -12,15 +14,25 @@ namespace raytracer
         point
     };
 
-    class light
+    struct light
     {
 
-    public:
-        // light(light_type type, const vec4 &color, const vec4 &position);
-        light_type _type;
-        vec4 _color;
-        vec4 _position;
+        light(light_type _type, const vec4 & _color, const vec4 & _position) :
+        type(_type), color(_color), position(_position)  {
+            
+        }
 
+        light_type type;
+        vec4 color;
+        vec4 position;
+
+        inline void print() const{
+            std::cout << "type: " << (type == light_type::direction ? "direction" : "point");
+            std::cout << "color: ";
+            util::print_vector( color);
+            std::cout << "position: ";
+            util::print_vector(position);
+        }
     };
 } // namespace raytracer
 

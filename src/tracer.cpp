@@ -38,10 +38,15 @@ namespace raytracer
         }
 
         vec3 color = _compute_color(min_dist, _ray);
-
+        std::cout << "color: " << std::endl;
+        util::print_vector(color);
+        return color;
         //reflected light
-        ray reflected_ray = util::reflected_ray(_ray, min_dist.shape_ptr->normal());
-        return color + vec3(min_dist.shape_ptr->get_material().specular) * _trace_reflected(reflected_ray, ++counter);
+        // ray reflected_ray = util::reflected_ray(_ray, min_dist.shape_ptr->normal());
+        // util::print_vector(reflected_ray.position);
+        // util::print_vector(reflected_ray.direction);
+
+        // return color + vec3(min_dist.shape_ptr->get_material().specular) * _trace_reflected(reflected_ray, ++counter);
         
     }
 
@@ -65,19 +70,16 @@ namespace raytracer
 
         vec3 finalcolor(0.0, 0.0, 0.0);
         const auto [shape, distance, _, point] = intersection_result;
-
-
-        vec4 dehomgenized_pos = util::dehomogenize(point);  
-        vec3 eyedirn = glm::normalize(_ray.position - dehomgenized_pos);
+        vec3 eye_direction = glm::normalize(_ray.position - point);
 
         for (auto const &light : _scene->get_lights())
         {
 
-            const auto [light_type, light_position, light_color] = light;
-            vec3 dir, halfv;
-            vec4 col;
+            const auto [light_type, light_color, light_position] = light;
+            vec3 light_direction;
+            vec3 halfv;
 
-            float d = glm::distance(light_position, dehomgenized_pos);
+            float d = glm::distance(light_position, point);
             auto attenuation = _scene->get_attenuation();
             float denom = 1.0f / (attenuation.x + d * attenuation.y + pow(d, 2) * attenuation.z);
 
@@ -86,27 +88,30 @@ namespace raytracer
 
             // Directional lights have no attenuation (denom = 1)
             case (light_type::direction):
-                dir = glm::normalize(vec3(light_position));
-                halfv = normalize(dir + eyedirn);
+
+                light_direction = glm::normalize(vec3(light_position));
+                std::cout << "light_direction:";
+                util::print_vector(light_direction);
+                halfv = normalize(light_direction + eye_direction);
                 denom = 1;
                 break;
 
             case (light_type::point):
                 vec4 pos = light_position;
-                dir = glm::normalize(pos - dehomgenized_pos);
-                halfv = normalize(dir + eyedirn);
+                light_direction = glm::normalize(pos - point);
+                halfv = normalize(light_direction + eye_direction);
                 break;
             }
 
             ray _ray;
-            _ray.direction = light_position - dehomgenized_pos;
-            _ray.position = dehomgenized_pos + _ray.direction * vec4(0.001);
+            _ray.direction = light_position - point;
+            _ray.position = point + _ray.direction * vec4(0.001);
 
             auto closest_shadow = _closest_shape(_ray);
             if (!closest_shadow.intersect)
             {
 
-                finalcolor += denom * vec3(algorithm::lighting(vec4(dir, 0), shape.get(), light, vec4(halfv, 0)));
+                finalcolor += denom * vec3(algorithm::lighting(vec4(light_direction, 0), shape.get(), light, vec4(halfv, 0)));
             }
             else
             {

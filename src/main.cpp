@@ -6,7 +6,7 @@
 #include "FreeImage.h"
 #include "tracer.hpp"
 #include <memory>
-
+#include "util.hpp"
 using namespace raytracer;
 void saveScreenshot(std::shared_ptr<scene> & scene, std::string fname, std::vector<vec3> inputPixels);
 
@@ -22,16 +22,20 @@ int main(int argc, char *argv[])
         std::cerr << "Too many arguments. Please enter a single scene file. " << std::endl;
     }
      
-    scene_builder sb(argv[1]);
+    // scene_builder sb(argv[1]);
 
-    //Expensive operation (recreates the scene)
-    std::shared_ptr<scene> _scene = sb.create_scene();
+    // //Expensive operation (recreates the scene)
+    // std::shared_ptr<scene> _scene = sb.create_scene();
     
-    tracer rt(5, _scene);
+    // _scene->print();
+    // tracer rt(5, _scene);
     
-    std::vector<vec3> pixels = _scene->render_scene(rt);
+    // std::vector<vec3> pixels = _scene->render_scene(rt);
 
-    saveScreenshot(_scene, "output.png", pixels);
+    // // for(vec3 p : pixels){
+    // //     util::print_vector(p);
+    // // }
+    // saveScreenshot(_scene, "output.png", pixels);
 
     return 1;
 }

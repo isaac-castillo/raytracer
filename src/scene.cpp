@@ -34,11 +34,19 @@ namespace raytracer {
         this->_width = width;
     }
 
-    void scene::print_shapes() const{
+    void scene::print() const{
 
         for (auto const & s : _shapes){
             s->print();
         }
+
+        for(auto const & light : _lights){
+            light.print();
+        }
+
+        _cam.print();
+
+
     }
 
     std::vector<vec3> scene::render_scene(const tracer & tracer)
@@ -105,5 +113,12 @@ namespace raytracer {
 
     vec3 scene::get_attenuation() const {
         return _attenuation;
+    }
+
+    void scene::set_attenuation(const vec3 & vec){
+        _attenuation = vec;
+    }
+    camera scene::get_cam() {
+        return _cam;
     }
 }
