@@ -2,6 +2,7 @@
 #include "light.hpp"
 #include "scene.hpp"
 #include "plane.hpp"
+#include "sphere.hpp"
 #include <fstream>
 #include <iostream>
 #include <stack>
@@ -33,6 +34,10 @@ namespace raytracer
             ret_vector.push_back(current);
         }
         return ret_vector;
+    }
+    std::unique_ptr<scene> scene_builder::create_scene()
+    {
+        return std::move(_scene);
     }
 
     scene_builder::scene_builder(const std::string &filename)
@@ -94,6 +99,21 @@ namespace raytracer
 
                     rightmultiply(translate, transformations);
                 }
+                else if (command == "scale")
+                {
+                    auto vec = readvals<float>(sstr, 3);
+                    mat4 scale = glm::scale(vec3(vec[0], vec[1], vec[2]));
+
+                    rightmultiply(scale, transformations);
+                }
+                else if (command == "rotate")
+                {
+                    auto vec = readvals<float>(sstr, 3);
+
+                    vec3 rotation{vec[0], vec[1], vec[2]};
+                    mat4 rotate = glm::rotate(vec[3], rotation);
+                    rightmultiply(rotate, transformations);
+                }
                 else if (command == "point")
                 {
 
@@ -137,6 +157,57 @@ namespace raytracer
                     _shape->set_transform(transformations.top());
                     _shape->set_material(_material);
                     _scene->add_shape(_shape);
+                }
+                else if (command == "sphere")
+                {
+                    auto vec = readvals<float>(sstr, 4);
+
+                    vec4 center{vec[0], vec[1], vec[2], 0};
+
+                    std::unique_ptr<shape> _shape = std::make_unique<sphere>(vec[3], center);
+                    _shape->set_transform(transformations.top());
+                    _shape->set_material(_material);
+                    _scene->add_shape(_shape);
+                }
+                else if (command == "ambient")
+                {
+                    auto vec = readvals<float>(sstr, 3);
+                    _material.ambient = vec4(vec[0], vec[1], vec[2], 0);
+                }
+                else if (command == "diffuse")
+                {
+                    auto vec = readvals<float>(sstr, 3);
+                    _material.diffuse = vec4(vec[0], vec[1], vec[2], 0);
+                }
+                else if (command == "specular")
+                {
+                    auto vec = readvals<float>(sstr, 3);
+                    _material.specular = vec4(vec[0], vec[1], vec[2], 0);
+                }
+                else if (command == "emission")
+                {
+                    auto vec = readvals<float>(sstr, 3);
+                    _material.emission = vec4(vec[0], vec[1], vec[2], 0);
+                }
+                else if (command == "shininess")
+                {
+                    auto vec = readvals<float>(sstr, 1);
+                    _material.shininess = vec[0];
+                }
+                else if (command == "pushTransform")
+                {
+                    transformations.push(transformations.top());
+                }
+                else if (command == "popTransform")
+                {
+                    if (transformations.size() <= 1)
+                        std::cerr << "Stack has no elements.  Cannot Pop\n";
+                    else
+                        transformations.pop();
+                }
+                else
+                {
+                    std::cerr << "Unknown Command: " << command << " Skipping \n";
                 }
             }
         }

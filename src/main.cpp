@@ -22,20 +22,20 @@ int main(int argc, char *argv[])
         std::cerr << "Too many arguments. Please enter a single scene file. " << std::endl;
     }
      
-    // scene_builder sb(argv[1]);
+    scene_builder sb(argv[1]);
 
-    // //Expensive operation (recreates the scene)
-    // std::shared_ptr<scene> _scene = sb.create_scene();
+    //Expensive operation (recreates the scene)
+    std::shared_ptr<scene> _scene = sb.create_scene();
     
-    // _scene->print();
-    // tracer rt(5, _scene);
+    _scene->print();
+    tracer rt(5, _scene);
     
-    // std::vector<vec3> pixels = _scene->render_scene(rt);
+    std::vector<vec3> pixels = _scene->render_scene(rt);
 
-    // // for(vec3 p : pixels){
-    // //     util::print_vector(p);
-    // // }
-    // saveScreenshot(_scene, "output.png", pixels);
+    // for(vec3 p : pixels){
+    //     util::print_vector(p);
+    // }
+    saveScreenshot(_scene, "output.png", pixels);
 
     return 1;
 }
