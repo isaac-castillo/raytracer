@@ -35,7 +35,7 @@ namespace raytracer
         }
         return ret_vector;
     }
-    std::unique_ptr<scene> scene_builder::create_scene()
+    std::unique_ptr<Scene> scene_builder::create_scene()
     {
         return std::move(_scene);
     }
@@ -54,14 +54,14 @@ namespace raytracer
 
         transformations.push(mat4(1.0));
 
-        std::vector<vec4> _vertices;
-        material _material;
+        std::vector<vec3> _vertices;
+        Material _material;
 
-        while (ifs.is_open())
+        while (ifs.is_open() && !ifs.eof())
         {
-
             std::string line;
             std::getline(ifs, line);
+            // std::cout << line << std::endl;
 
             if ((line.find_first_not_of(" \t\r\n") != std::string::npos) && (line[0] != '#'))
             {
@@ -83,7 +83,7 @@ namespace raytracer
                     vec3 upv{vec[6], vec[7], vec[8]};
                     float fovy{vec[9]};
 
-                    camera cam;
+                    Camera cam;
                     cam.set_fovy(fovy).set_look_at(center).set_up(upv).set_look_from(eye);
                     _scene->set_camera(cam);
                 }
@@ -119,10 +119,10 @@ namespace raytracer
 
                     auto vec = readvals<float>(sstr, 6);
 
-                    vec4 lightpos{vec[0], vec[1], vec[2], 1};
-                    vec4 lightcolor{vec[3], vec[4], vec[5], 0};
+                    vec3 lightpos{vec[0], vec[1], vec[2]};
+                    vec3 lightcolor{vec[3], vec[4], vec[5]};
 
-                    light l{light_type::point, lightcolor, lightpos};
+                    Light l{LightType::point, lightcolor, lightpos};
                     _scene->add_light(l);
                 }
                 else if (command == "directional")
@@ -130,41 +130,43 @@ namespace raytracer
 
                     auto vec = readvals<float>(sstr, 6);
 
-                    vec4 lightpos{vec[0], vec[1], vec[2], 1};
-                    vec4 lightcolor{vec[3], vec[4], vec[5], 1};
+                    vec3 lightpos{vec[0], vec[1], vec[2]};
+                    vec3 lightcolor{vec[3], vec[4], vec[5]};
 
-                    light l{light_type::direction, lightcolor, lightpos};
+                    Light l{LightType::direction, lightcolor, lightpos};
                     _scene->add_light(l);
                 }
                 else if (command == "vertex")
                 {
 
                     auto vec = readvals<float>(sstr, 3);
-                    _vertices.push_back(vec4(vec[0], vec[1], vec[2], 1.0f));
+                    _vertices.push_back(vec3(vec[0], vec[1], vec[2]));
                 }
                 else if (command == "tri")
                 {
 
                     auto vec = readvals<float>(sstr, 3);
 
-                    std::vector<vec4> verts;
+                    std::vector<vec3> verts;
 
                     verts.push_back(_vertices[vec[0]]);
                     verts.push_back(_vertices[vec[1]]);
                     verts.push_back(_vertices[vec[2]]);
 
-                    std::unique_ptr<shape> _shape = std::make_unique<plane>(verts);
+                    std::unique_ptr<Shape> _shape = std::make_unique<Plane>(verts);
+                    
                     _shape->set_transform(transformations.top());
                     _shape->set_material(_material);
+
                     _scene->add_shape(_shape);
                 }
                 else if (command == "sphere")
                 {
                     auto vec = readvals<float>(sstr, 4);
 
-                    vec4 center{vec[0], vec[1], vec[2], 0};
+                    vec4 center{vec[0], vec[1], vec[2], 1};
 
-                    std::unique_ptr<shape> _shape = std::make_unique<sphere>(vec[3], center);
+                    std::unique_ptr<Shape> _shape = std::make_unique<Sphere>(vec[3], center);
                     _shape->set_transform(transformations.top());
                     _shape->set_material(_material);
                     _scene->add_shape(_shape);
@@ -172,22 +174,22 @@ namespace raytracer
                 else if (command == "ambient")
                 {
                     auto vec = readvals<float>(sstr, 3);
-                    _material.ambient = vec4(vec[0], vec[1], vec[2], 0);
+                    _material.ambient = vec3(vec[0], vec[1], vec[2]);
                 }
                 else if (command == "diffuse")
                 {
                     auto vec = readvals<float>(sstr, 3);
-                    _material.diffuse = vec4(vec[0], vec[1], vec[2], 0);
+                    _material.diffuse = vec3(vec[0], vec[1], vec[2]);
                 }
                 else if (command == "specular")
                 {
                     auto vec = readvals<float>(sstr, 3);
-                    _material.specular = vec4(vec[0], vec[1], vec[2], 0);
+                    _material.specular = vec3(vec[0], vec[1], vec[2]);
                 }
                 else if (command == "emission")
                 {
                     auto vec = readvals<float>(sstr, 3);
-                    _material.emission = vec4(vec[0], vec[1], vec[2], 0);
+                    _material.emission = vec3(vec[0], vec[1], vec[2]);
                 }
                 else if (command == "shininess")
                 {

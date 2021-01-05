@@ -5,30 +5,28 @@
 #include "gl_typedef.hpp"
 #include <vector>
 
-namespace raytracer {
-    
-    class ray;
-    class plane : public shape {
+namespace raytracer
+{
 
-    
+    class Ray;
+    class Plane : public Shape
+    {
+
     public:
-        plane(const std::vector<vec4> &vertices);
-
+        explicit Plane(const std::vector<vec3> &vertices);
 
         // A check to determine whether the vector reaches the plane
-        intersect_result inside(const ray & ray) override;
+        std::optional<IntersectResult> inside(const Ray &ray) override;
         void print() override;
-        vec4 normal(const vec4 & v=vec4(1.0f)) const override;
+        vec3 normal(const vec3 &v = vec3(1.0f)) const override;
 
     private:
-        float _dist_to_plane(const ray & ray);
-        bool _intersect(const vec4 &position_to_plane);
+        float _dist_to_plane(const Ray &ray);
+        bool _intersect(const vec3 &position_to_plane);
 
-        std::vector<vec4> _vertices;
-
+        std::vector<vec3> _vertices;
     };
 
-}
-
+} // namespace raytracer
 
 #endif

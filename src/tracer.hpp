@@ -10,22 +10,22 @@
 namespace raytracer
 {
 
-    class intersect_result;
-    class ray;
+    class IntersectResult;
+    class Ray;
     class tracer
     {
 
     private:
-        vec3 _trace_reflected(const ray &ray, int counter) const;
-        vec3 _compute_color(intersect_result &rd, const ray &ray) const;
-        intersect_result _closest_shape(const ray &ray) const;
+        vec3 _trace_reflected(const Ray &ray, int counter) const;
+        vec3 _compute_color(IntersectResult &rd, const Ray &ray) const;
+        std::optional<IntersectResult> _closest_shape(const Ray &ray) const;
 
-        std::shared_ptr<scene> _scene;
+        std::shared_ptr<Scene> _scene;
         int _max_depth;
 
     public:
-        tracer(int max_depth, std::shared_ptr<scene> scene);
-        vec3 trace(const ray &ray) const;
+        explicit tracer(int max_depth, std::shared_ptr<Scene> scene);
+        vec3 trace(const Ray &ray) const;
     };
 
 } // namespace raytracer

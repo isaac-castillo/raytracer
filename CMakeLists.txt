@@ -20,6 +20,7 @@ src/tracer.cpp
 src/shape.hpp
 src/sphere.cpp
 src/scene_builder2.cpp
+
 )
 
 add_executable(raytracer_test
@@ -28,7 +29,13 @@ test/camera_test.cpp
 test/ray_test.cpp
 test/sphere_test.cpp
 test/tracer_test.cpp
+test/builder_test.cpp
+src/plane.cpp
+src/test_shape.cpp
 test/light_test.cpp
+src/tracer.cpp
+src/scene_builder2.cpp
+src/scene.cpp
 src/sphere.cpp
 src/shape.hpp
 src/camera.cpp

@@ -1,26 +1,34 @@
 #include "plane.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
-#include "intersect_result.hpp"
-#include "util.hpp"
-#include <memory>
-#include "gl_typedef.hpp"
-#include <iostream>
 #include <glm/gtx/string_cast.hpp>
+
+#include <memory>
+#include <iostream>
 #include <iomanip>
-namespace raytracer {
+#include <optional>
 
-    plane::plane(const std::vector<vec4> & vertices) : _vertices(vertices), 
-        shape(
-            vec4(glm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])), 1)
-            ) {
-            }
-        
+#include "intersect_result.hpp"
+#include "gl_typedef.hpp"
+#include "util.hpp"
+#include "ray.hpp"
 
-    void plane::print() {
+namespace raytracer
+{
+
+    Plane::Plane(const std::vector<vec3> &vertices)
+        : _vertices(vertices),
+          Shape(vec4(glm::triangleNormal(vec3(vertices[0]), vec3(vertices[1]), vec3(vertices[2])), 0))
+    {
+    }
+
+    void Plane::print()
+    {
 
         std::cout << "vertices:" << std::endl;
-        for(auto const & vec : _vertices){
+        for (auto const &vec : _vertices)
+        {
             util::print_vector(vec);
         }
         std::cout << "normal:";
@@ -40,14 +48,13 @@ namespace raytracer {
 
         // std::cout << "normal: " << std::setprecision(3) << glm::to_string(_normal) << std::endl;
         // std::cout << "transform: " << std::setprecision(3) << glm::to_string(_transform) << std::endl;
-
     }
-    
+
     /* A algorithm to compute whether a position interects with a plane */
-    intersect_result plane::inside(const ray & _ray){
+    std::optional<IntersectResult> Plane::inside(const Ray &_ray)
+    {
 
-
-        intersect_result result;
+        IntersectResult result;
 
         /* We want to determine if the ray intersects with the plane, which is transformed */
         /* We apply the strategy which may not be relevant here, since a transformed plane is just a transformed plane (as opposed to an ellipse or whatever):
@@ -77,27 +84,31 @@ namespace raytracer {
 
         /* 2 */
         result.distance = _dist_to_plane(inverse_ray);
-        
-
+        std::optional<IntersectResult> return_result;
         /* 3: If t is a tiny bit positive */
         if (result.distance > 0.0001)
         {
             const auto [position, direction] = inverse_ray;
             /* This point is the point after inversing the inverse (by applying the transform positively) */
-            result.point = _transform * ( position + direction * result.distance );
-            result.point = util::dehomogenize(result.point);
-            
+            auto world_coord = util::transform_to_world(_transform, position + direction * result.distance);
+            result.point = util::dehomogenize(world_coord);
+
             /* 4 */
-            result.intersect = _intersect(result.point);
-            result.shape_ptr = std::make_shared<plane>(*this);
+            auto intersect = _intersect(result.point);
+            result.shape_ptr = std::make_shared<Plane>(*this);
+
+            if (intersect)
+            {
+                return_result = result;
+            }
         }
 
-        return result;
+        return return_result;
     }
 
-
     /* Use Barycentric coordinates to determine if the intersected position is in the triangle */
-    bool plane::_intersect(const vec4 & position_to_plane){
+    bool Plane::_intersect(const vec3 &position_to_plane)
+    {
 
         vec3 v0 = vec3(_vertices[1] - _vertices[0]);
         vec3 v1 = vec3(_vertices[2] - _vertices[0]);
@@ -112,10 +123,11 @@ namespace raytracer {
         float gamma = (d00 * d21 - d01 * d20) / d;
         float alpha = 1.0f - beta - gamma;
 
-        return beta >= 0 && gamma >=0 && alpha >= 0; 
+        return beta >= 0 && gamma >= 0 && alpha >= 0;
     }
 
-    float plane::_dist_to_plane(const ray & _ray){
+    float Plane::_dist_to_plane(const Ray &_ray)
+    {
 
         float t = glm::dot(_vertices[0], _normal) - glm::dot(_ray.position, _normal);
         t = t / glm::dot(_ray.direction, _normal);
@@ -123,7 +135,8 @@ namespace raytracer {
         return t;
     }
 
-    vec4 plane::normal(const vec4 & v) const {
+    vec3 Plane::normal(const vec3 &v) const
+    {
         return _normal;
     }
-}
+} // namespace raytracer

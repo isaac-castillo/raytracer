@@ -4,25 +4,27 @@
 #include "shape.hpp"
 #include "gl_typedef.hpp"
 #include <vector>
+#include <optional>
 
 namespace raytracer {
     
-    class ray;
-    class sphere : public shape {
+    class Ray;
+    class Sphere : public Shape {
 
     
     public:
-        sphere(float radius = 1.0f, vec4 center = vec4(0,0,0,1), mat4 transformation = mat4(1.0f));
+        explicit Sphere(float radius = 1.0f, vec3 center = vec3(0,0,0), mat4 transformation = mat4(1.0f));
 
-        intersect_result inside(const ray & ray) override;
+        std::optional<IntersectResult> inside(const Ray & ray) override;
         void print() override;
 
-        vec4 normal(const vec4 &) const override;
-
+        vec3 normal(const vec3 &) const override;
+        vec3 get_center();
+        float get_radius();
     private:
 
-        float _radius;
-        vec4 _center;
+        float _radius { 1.0f };
+        vec3 _center { 0,0,0};
 
 
     };

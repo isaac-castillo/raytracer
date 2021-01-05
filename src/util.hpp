@@ -8,38 +8,40 @@
 namespace raytracer::util
 {
 
-    inline ray inverse_ray(const mat4 transform, const ray &_ray)
+    inline Ray inverse_ray(const mat4 transform, const Ray &_ray)
     {
-        ray r;
-
         mat4 inverse = glm::inverse(transform);
-        r.position = inverse * _ray.position;
-        r.direction = inverse * _ray.direction;
 
-        return r;
+        /* TODO: Rename these variables to make it more generalizable. */
+        auto object_position = vec3(inverse * vec4(_ray.position, 1));
+        auto object_direction = vec3(inverse * vec4(_ray.direction, 0));
+
+        return Ray(object_position, object_direction);
     }
 
-    inline ray transform_ray(const mat4 transform, const ray & _ray){
+    inline Ray transform_ray(const mat4 transform, const Ray & _ray){
 
-        ray return_ray;
-        return_ray.position = transform * _ray.position;
-        return_ray.direction = transform * _ray.direction;
+        auto world_position = vec3(transform * vec4(_ray.position, 1));
+        auto world_direction = vec3(transform * vec4(_ray.direction, 0));
 
-        return return_ray;
+        return Ray(world_position, world_direction);
+
     }
 
-    inline vec4 dehomogenize(const vec4 v){
-        return vec4(v.x/v.w, v.y/v.w, v.z/v.w, 1);
+    inline vec4 transform_to_world(const mat4 & transform, const vec3 point){
+        return transform * vec4(point, 1);
+    }
+
+    inline vec3 dehomogenize(const vec4 v){
+        return vec3(v.x/v.w, v.y/v.w, v.z/v.w);
     }
 
 
-    inline ray reflected_ray(const ray & _ray, const vec3 normal){
+    inline Ray reflected_ray(const Ray & ray, const vec3 normal){
 
-        ray r = _ray;
-        auto new_direction = vec3(r.direction) - 2 * glm::dot(vec3(r.direction), normal) * normal;
-        r.direction = vec4(new_direction, 0);
-        r.position = _ray.position + r.direction * 0.001f;
-        return r;
+        auto new_direction = ray.direction - 2 * glm::dot (ray.direction, normal) * normal;
+        return Ray(new_direction, ray.position + new_direction * 0.001f);
+
     }
 
     inline void print_vector(vec3 v){
@@ -57,6 +59,7 @@ namespace raytracer::util
         print_vector(v[2]);
         print_vector(v[3]);
     }
+    
 
 
     

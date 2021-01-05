@@ -13,38 +13,38 @@
 namespace raytracer {
 
 class tracer;
-class scene
+class Scene
 {
 
 private:
-    camera _cam;
-    std::vector<light> _lights;
-    std::vector<std::unique_ptr<shape>> _shapes;
+    Camera _cam;
+    std::vector<Light> _lights;
+    std::vector<std::unique_ptr<Shape>> _shapes;
 
     int _width = {0};
     int _height = {0};
     int _num_shapes = {0};
 
-    vec3 _attenuation;
+    vec3 _attenuation { 1, 0, 0 };
 
 
 public:
-    scene();
+    Scene();
     void set_camera(const vec3 & eye, const vec3 & center, const vec3 & up, const float & fovy);
-    void set_camera(const camera & cam);
+    void set_camera(const Camera & cam);
     void set_height(int height);
     void set_width(int width);
-    void add_shape(std::unique_ptr<shape> & _shape);
-    void add_light(const light & light);
-
+    void add_shape(std::unique_ptr<Shape> & _shape);
+    void add_light(const Light & light);
+        
     void print() const;
     int get_width() const;
     int get_height() const;
-    const std::vector<std::unique_ptr<shape>> & get_shapes();
+    const std::vector<std::unique_ptr<Shape>> & get_shapes();
     std::vector<vec3> render_scene(const tracer & tracer);
-    std::vector<light> get_lights();
+    std::vector<Light> get_lights();
 
-    camera get_cam();
+    Camera get_cam();
     vec3 get_attenuation() const; 
     void set_attenuation(const vec3 &);
 };

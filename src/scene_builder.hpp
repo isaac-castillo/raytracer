@@ -8,16 +8,16 @@
 namespace raytracer
 {
 
-    class scene;
+    class Scene;
     class scene_builder
     {
 
     public:
         scene_builder(const std::string &filename);
-        std::unique_ptr<scene> create_scene();
+        std::unique_ptr<Scene> create_scene();
 
     private:
-        std::unique_ptr<scene> _scene;
+        std::unique_ptr<Scene> _scene = std::make_unique<Scene>();
 
         std::stack<mat4> transformations;
 

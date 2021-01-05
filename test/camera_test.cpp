@@ -6,9 +6,9 @@
 #include <glm/gtx/string_cast.hpp>
 using namespace raytracer;
 
-TEST_CASE("look_at() computes identity matrix", "[camera]") {
+TEST_CASE("look_at() computes identity matrix", "[Camera]") {
 
-    camera cam;
+    Camera cam;
 
     glm::vec3 lookFrom  = vec3(0,0,0);
     glm::vec3 lookAt    = vec3(0,0,-1);
@@ -19,9 +19,9 @@ TEST_CASE("look_at() computes identity matrix", "[camera]") {
 
 }
 
-TEST_CASE("look_at() computes scaling matrix", "[camera]") {
+TEST_CASE("look_at() computes scaling matrix", "[Camera]") {
 
-    camera cam;
+    Camera cam;
 
     glm::vec3 lookFrom  = vec3(0,0,0);
     glm::vec3 lookAt    = vec3(0,0,1);
@@ -35,8 +35,8 @@ TEST_CASE("look_at() computes scaling matrix", "[camera]") {
     
 }
 
-TEST_CASE("look_at() computes translation matrix,", "[camera]"){
-    camera cam;
+TEST_CASE("look_at() computes translation matrix,", "[Camera]"){
+    Camera cam;
 
     glm::vec3 lookFrom  = vec3(0,0,8);
     glm::vec3 lookAt    = vec3(0,0,0);
@@ -50,9 +50,9 @@ TEST_CASE("look_at() computes translation matrix,", "[camera]"){
 }
 
 
-TEST_CASE("direction() computes direction through center", "[camera"){
+TEST_CASE("direction() computes direction through center", "[Camera"){
 
-    camera cam;
+    Camera cam;
 
     cam.set_fovy( 90 );
 
@@ -67,11 +67,10 @@ TEST_CASE("direction() computes direction through center", "[camera"){
 
 }
 
-TEST_CASE("direction() computes direction through corner", "[camera]"){
+TEST_CASE("direction() computes direction through corner", "[Camera]"){
 
-    camera cam;
-
-
+    Camera cam;
+    
     auto px = 0;
     auto py = 0;
     auto width = 201;
@@ -80,13 +79,29 @@ TEST_CASE("direction() computes direction through corner", "[camera]"){
     //round_about way of setting
     cam.set_fovx( 90, width, height );
 
-
     vec3 direction = cam.direction(px, py, width, height);
     INFO ("cam.direction(..)" << glm::to_string(direction) );
     REQUIRE( glm::all(glm::lessThan(glm::abs(direction - vec3(-0.66519,0.33259,-0.66851)), vec3(0.01))) );
 
-
 }
 
+TEST_CASE("direction() computes direction with transformed camera", "[Camera]"){
+
+    Camera cam;
+    
+    auto px = 0;
+    auto py = 0;
+    auto width = 201;
+    auto height = 101;
+
+    //round_about way of setting
+    cam.set_fovx( 90, width, height );
+
+    vec3 direction = cam.direction(px, py, width, height);
+
+    INFO ("cam.direction(..)" << glm::to_string(direction) );
+    REQUIRE( glm::all(glm::lessThan(glm::abs(direction - vec3(-0.66519,0.33259,-0.66851)), vec3(0.01))) );
+
+}
 
 

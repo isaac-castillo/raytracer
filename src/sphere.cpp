@@ -6,7 +6,7 @@
 namespace raytracer
 {
 
-    sphere::sphere(float radius, vec4 center, mat4 transformation) : shape(vec4(), transformation), _radius(radius), _center(center)
+    Sphere::Sphere(float radius, vec3 center, mat4 transformation) : Shape(vec3(), transformation), _radius(radius), _center(center)
     {
         float pi = glm::pi<float>();
         std::vector<vec4> sphereVertices;
@@ -63,11 +63,10 @@ namespace raytracer
         }
     }
 
-    intersect_result sphere::inside(const ray & _ray) {
+    std::optional<IntersectResult> Sphere::inside(const Ray & _ray) {
         auto inverse_ray = util::inverse_ray(_transform, _ray);
 
 
-        intersect_result result;
 
         const auto [ray_position, ray_direction] = inverse_ray;
 
@@ -79,13 +78,14 @@ namespace raytracer
         float c = glm::dot(p_normal, p_normal ) - (_radius * _radius);
         float discriminant =  b*b - 4*a*c;
 
+        std::optional<IntersectResult> return_result;
         if(discriminant < 0){
-            result.intersect = false;
-            return result;
+            return std::nullopt;
         }
+        
+        IntersectResult result;
 
-        result.intersect = true;
-        result.shape_ptr = std::make_shared<sphere>(*this);
+        result.shape_ptr = std::make_shared<Sphere>(*this);
 
         if(discriminant == 0){
             result.distance = -b/(2*a);
@@ -100,24 +100,34 @@ namespace raytracer
             result.distance = pos_root;;
         }
         else if (pos_root < 0 and neg_root < 0){
-            result.intersect = false;
+            return std::nullopt;
         } 
-        return result;
+        auto world_coord  = util::transform_to_world(_transform, ray_position + ray_direction * result.distance);
+        result.point = util::dehomogenize(world_coord);
+
+        return_result = result;
+        return return_result;
 
     }
-    void sphere::print() {
+    void Sphere::print() {
 
     }
 
-    vec4 sphere::normal(const vec4 & vec) const {
+    vec3 Sphere::normal(const vec3 & vec) const {
 
-
-        vec4 object_point = glm::inverse(_transform) * vec;
-        vec4 fake_normal = object_point - _center;
+        vec4 object_point = glm::inverse(_transform) * vec4(vec, 1);
+        vec4 fake_normal = object_point - vec4(_center, 0);
         vec4 normal = glm::mat4(glm::transpose(glm::inverse(_transform))) * fake_normal;
         normal.w = 0;
 
-        return glm::normalize(normal);
+        return glm::normalize(vec3(normal));
+    }
+
+    vec3 Sphere::get_center(){
+        return _center;
+    }
+    float Sphere::get_radius(){
+        return _radius;
     }
 
 

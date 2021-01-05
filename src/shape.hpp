@@ -5,6 +5,7 @@
 #include "gl_typedef.hpp"
 #include <memory>
 #include "intersect_result.hpp"
+#include <optional>
 
 namespace raytracer
 {
@@ -15,45 +16,47 @@ namespace raytracer
         sphere
     };
 
-    class ray;
-    class shape
+    class Ray;
+    class Shape
     {
 
     private:
-        material _material;
+        Material _material;
 
     protected:
-        shape(vec4 normal, mat4 transform) : _transform(transform), _normal(normal){
+        explicit Shape(vec3 normal, mat4 transform)
+            : _transform(transform), _normal(normal){
 
-                                                                    };
+                                     };
 
-        shape()
+        explicit Shape()
         {
         }
 
-        shape(vec4 normal) : _normal(normal) {}
+        Shape(vec3 normal) : _normal(normal) {}
 
-        vec4 _normal;
+        vec3 _normal;
         mat4 _transform = mat4(1.0);
 
     public:
         virtual void print() = 0;
-        virtual intersect_result inside(const ray &ray) = 0;
+        virtual std::optional<IntersectResult> inside(const Ray &ray) = 0;
         mat4 get_transform() const
         {
             return _transform;
         }
 
-        void set_transform(const mat4 transform) {
+        void set_transform(const mat4 transform)
+        {
             _transform = transform;
         }
-        virtual vec4 normal(const vec4 &) const = 0;
-        material get_material() const
+        virtual vec3 normal(const vec3 &v = vec3(0)) const = 0;
+        Material get_material() const
         {
             return _material;
         }
 
-        void set_material(const material &material)
+        void set_material(const Material &material)
         {
             _material = material;
         }

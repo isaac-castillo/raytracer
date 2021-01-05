@@ -7,8 +7,9 @@
 #include "tracer.hpp"
 #include <memory>
 #include "util.hpp"
+#include <algorithm>
 using namespace raytracer;
-void saveScreenshot(std::shared_ptr<scene> & scene, std::string fname, std::vector<vec3> inputPixels);
+void saveScreenshot(std::shared_ptr<Scene> & scene, std::string fname, std::vector<vec3> inputPixels);
 
 int main(int argc, char *argv[])
 {
@@ -25,22 +26,19 @@ int main(int argc, char *argv[])
     scene_builder sb(argv[1]);
 
     //Expensive operation (recreates the scene)
-    std::shared_ptr<scene> _scene = sb.create_scene();
+    std::shared_ptr<Scene> _scene = sb.create_scene();
     
     _scene->print();
     tracer rt(5, _scene);
     
     std::vector<vec3> pixels = _scene->render_scene(rt);
 
-    // for(vec3 p : pixels){
-    //     util::print_vector(p);
-    // }
     saveScreenshot(_scene, "output.png", pixels);
 
     return 1;
 }
 
-void saveScreenshot(std::shared_ptr<scene> & scene, std::string fname, std::vector<vec3> inputPixels)
+void saveScreenshot(std::shared_ptr<Scene> & scene, std::string fname, std::vector<vec3> inputPixels)
 {
     int w = scene->get_width();
     int h = scene->get_height();
@@ -52,9 +50,9 @@ void saveScreenshot(std::shared_ptr<scene> & scene, std::string fname, std::vect
 
     for (size_t i = 0; i < pix; ++i)
     {
-        color.rgbRed = inputPixels[i].x;
-        color.rgbGreen = inputPixels[i].y;
-        color.rgbBlue = inputPixels[i].z;
+        color.rgbRed = std::min(255.0f, inputPixels[i].x);
+        color.rgbGreen = std::min(255.0f, inputPixels[i].y);
+        color.rgbBlue = std::min(255.0f,inputPixels[i].z);
         int ii = i / w;
         int jj = i % w;
         FreeImage_SetPixelColor(bitmap, jj, h - ii - 1, &color);

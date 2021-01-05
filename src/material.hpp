@@ -3,18 +3,18 @@
 
 #include "gl_typedef.hpp"
 
-namespace raytracer {
+namespace raytracer
+{
 
-
-    struct material {
-        vec4 emission = vec4(0.9);
-        vec4 ambient = vec4(0.1);
-        vec4 specular = vec4(0.9);
-        float shininess = 200.0;
-        vec4 diffuse = vec4(0.9);
+    struct Material
+    {
+        vec3 emission{0.9f};
+        vec3 ambient{0.1f};
+        vec3 specular{0.9f};
+        float shininess{200.0f};
+        vec3 diffuse{0.9f};
     };
 
-
-}
+} // namespace raytracer
 
 #endif

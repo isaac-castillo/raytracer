@@ -5,23 +5,19 @@
 #include "gl_typedef.hpp"
 namespace raytracer
 {
-    class shape;
+    class Shape;
 
-    struct intersect_result
+    struct IntersectResult
     {
 
-
         //A pointer to the object that intersected
-        std::shared_ptr<shape> shape_ptr;
+        std::shared_ptr<Shape> shape_ptr = nullptr;
 
         //The distance to the object intersected
         float distance = std::numeric_limits<float>().max();
 
-        //The result pattern 
-        bool intersect = false;
-
         //The point of intersection
-        vec4 point = vec4(0,0,0,0);
+        vec3 point = vec3(0, 0, 0);
     };
 
 } // namespace raytracer

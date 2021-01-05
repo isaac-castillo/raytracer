@@ -4,12 +4,21 @@
 #include "gl_typedef.hpp"
 namespace raytracer
 {
-    struct ray
+    struct Ray
     {
-        vec4 position;
-        vec4 direction;
 
-        inline vec4 at(float t){
+        vec3 position {0,0,0};
+        vec3 direction {0,0,0};
+
+        Ray(vec3 _position, vec3 _direction) : position(_position), direction(_direction) {
+
+        }
+
+        Ray(){
+
+        }
+
+        inline vec3 at(float t){
             return position + t * direction;
     }
     };
