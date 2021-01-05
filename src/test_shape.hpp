@@ -1,28 +1,24 @@
 #ifndef TESTSHAPE_CPP
 #define TESTSHAPE_CPP
 
-#include "shape.hpp"
 #include "gl_typedef.hpp"
+#include "shape.hpp"
 #include <vector>
 
 namespace raytracer {
-    
-    class ray;
-    class test_shape : public Shape {
 
-    
-    public:
-        test_shape(vec3 normal = vec3(0), mat4 transformation = mat4(1.0f));
+  class ray;
+  class test_shape : public Shape {
 
-        std::optional<IntersectResult> inside(const Ray & ray) override;
-        void print() override;
+  public:
+    test_shape(vec3 normal = vec3(0), mat4 transformation = mat4(1.0f));
 
-        vec3 normal(const vec3 &) const override;
+    std::optional<IntersectResult> inside(const Ray &ray) override;
+    void print() override;
 
+    vec3 normal(const vec3 &) const override;
+  };
 
-    };
-
-}
-
+} // namespace raytracer
 
 #endif
