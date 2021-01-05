@@ -1,6 +1,6 @@
 This is a raytracer built in CPP.
 
-Umm, to use you must have the FreeImage library. 
+To use you must have the FreeImage library. 
 
 You can get it from https://freeimage.sourceforge.io/
 
@@ -14,6 +14,8 @@ Then do the following:
 
 Running:
 
-`./raytracer`
+`./raytracer scenes/scene0.test`
+
+Or, to test:
 
 `./raytracer_test`
